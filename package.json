@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint",
     "express": "vue-cli-service express:watch",
     "express:run": "vue-cli-service express:run",
-    "start": "node index.js",
+    "start": "vue-cli-service express:run",
     "test": "jasmine spec/**/*.js"
   },
   "main": "index.js",
@@ -31,7 +31,6 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
     "jasmine": "^3.10.0",
-    "nodemon": "^2.0.15",
     "vue-cli-plugin-express": "~1.0.2"
   },
   "eslintConfig": {
