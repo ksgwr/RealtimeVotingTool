@@ -3,6 +3,10 @@
 数人規模のチームで投票・抽選を支援するためのWebToolです。
 フォームでのアンケート方式と異なり、ホストも投票に公平に参加できリアルタイムで即時投票から開票までを確認できるツールを目指します。
 
+## Demo
+
+https://realtime-voting-tool.herokuapp.com/
+
 ## How to develop
 
 ### Test
