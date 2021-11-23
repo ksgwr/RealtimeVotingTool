@@ -1,4 +1,4 @@
-const Util = require("../lib/Util.js");
+const Util = require("../srv/lib/Util.js");
 
 describe("Util test", function(){
     it("should issue user id ramdom 32 chars", function() {

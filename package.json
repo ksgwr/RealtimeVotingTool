@@ -1,29 +1,66 @@
 {
   "name": "realtimevotingtool",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "realtime voting and drawing tool",
+  "author": "ksgwr",
   "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "express": "vue-cli-service express:watch",
+    "express:run": "vue-cli-service express:run",
     "start": "node index.js",
     "test": "jasmine spec/**/*.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ksgwr/RealtimeVotingTool.git"
+  "main": "index.js",
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "express": "^4.17.1",
+    "socket.io": "^4.4.0",
+    "socket.io-client": "^4.4.0",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^7.0.0",
+    "jasmine": "^3.10.0",
+    "nodemon": "^2.0.15",
+    "vue-cli-plugin-express": "~1.0.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
   "bugs": {
     "url": "https://github.com/ksgwr/RealtimeVotingTool/issues"
   },
   "homepage": "https://github.com/ksgwr/RealtimeVotingTool#readme",
-  "dependencies": {
-    "express": "^4.17.1",
-    "socket.io": "^4.4.0"
-  },
-  "devDependencies": {
-    "jasmine": "^3.10.0",
-    "nodemon": "^2.0.15"
+  "keywords": [],
+  "license": "Apache License 2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksgwr/RealtimeVotingTool.git"
   }
 }

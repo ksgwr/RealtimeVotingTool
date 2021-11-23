@@ -14,8 +14,13 @@ $ npm run test
 ### Test Run
 
 ```
-$ npx node index.js
+$ npm run express
 $ open http://localhost:3000/
+```
+
+```
+$ npm run serve
+$ open http://localhost:8080/room/abc
 ```
 
 ### Deploy to heroku
