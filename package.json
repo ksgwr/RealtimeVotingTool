@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint",
     "express": "vue-cli-service express:watch",
     "express:run": "vue-cli-service express:run",
-    "start": "vue-cli-service express:run",
+    "start": "npm run serve",
     "test": "jasmine spec/**/*.js"
   },
   "main": "index.js",

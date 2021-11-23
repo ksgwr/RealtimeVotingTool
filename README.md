@@ -25,7 +25,13 @@ $ open http://localhost:8080/room/abc
 
 ### Deploy to heroku
 
+once setting
+
 ```
 $ heroku login
+$ heroku config:set NPM_CONFIG_PRODUCTION=false
+```
+
+```
 $ sh deploy.sh
 ```
