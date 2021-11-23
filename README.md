@@ -1,4 +1,4 @@
-# RealtimeVotingTool
+# RealtimeVotingTool ![build status](https://github.com/ksgwr/RealtimeVotingTool/actions/workflows/main.yml/badge.svg)
 
 数人規模のチームで投票・抽選を支援するためのWebToolです。
 フォームでのアンケート方式と異なり、ホストも投票に公平に参加できリアルタイムで即時投票から開票までを確認できるツールを目指します。
