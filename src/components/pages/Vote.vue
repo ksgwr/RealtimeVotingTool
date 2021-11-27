@@ -1,4 +1,5 @@
 <template>
+    <EditButton v-model="edit" @change="onChangeEdit" />
     <div id="users">
         <p>{{ users.length }} Users</p>
     </div>
@@ -15,8 +16,20 @@
 <script>
   import io from 'socket.io-client';
 
+  import EditButton from '@/components/modules/EditButton.vue'
+
+  const BOOL = {
+    LOADING_TRUE: 2,
+    TRUE: 1,
+    FALSE: -1,
+    LOADING_FALSE: -2
+  }
+
   export default {
     name: 'Vote',
+    components: {
+      EditButton
+    },
     data() {
       return {
             socket: io(),
@@ -27,13 +40,41 @@
                 { index: 0, text:'1' },
                 { index: 1, text:'2' },
                 { index: 2, text:'3' }
-            ]
+            ],
+            edit : BOOL.FALSE,
+            editLoading : false
+      }
+    },
+    methods: {
+      onChangeEdit(v) {
+        console.log(v);
+        console.log(`onChange $v`);
+      }
+    },
+    watch: {
+      edit() {
+        console.log(`edit changed $edit`);
+        if (Math.abs(this.edit) == 2) {
+          this.socket.emit('update_edit_mode_c2s', this.edit * -1 > 0);
+          //setTimeout(() => (this.edit = this.edit / 2 * -1), 3000);
+        }
       }
     },
     mounted() {
       this.socket.on('update_users', (users) => {
         console.log(users);
         this.users = users;
+      });
+
+      this.socket.on('update_edit_mode', (edit) => {
+        console.log('update_edit_mode');
+        console.log(edit);
+        this.edit = edit ? BOOL.TRUE : BOOL.FALSE;
+      });
+
+      this.socket.on('load_data', (data) => {
+        this.users = data.users;
+        this.edit = data.edit ? BOOL.TRUE : BOOL.FALSE;
       });
 
       this.socket.on('connect', () => {

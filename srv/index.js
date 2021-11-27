@@ -30,6 +30,12 @@ export default (app, http) => {
     });
     //io.to(roomId).emit('update_members', {});
   
+    socket.on('update_edit_mode_c2s', function(data) {
+      console.log('update_edit_mode');
+      room.edit = data;
+      io.to(roomId).emit('update_edit_mode', room.edit);
+    })
+
     console.log(`room: ${roomId} user: ${userId} join`);
     socket.on('disconnect', function() {
       const users = room.updateUser(userId, null);
@@ -38,7 +44,7 @@ export default (app, http) => {
     });
     
     // send all data
-    socket.emit('update_users', users);
+    socket.emit('load_data', room.getInitialData());
   });
   
 }

@@ -8,6 +8,7 @@ class Room {
     constructor(roomId) {
         this.roomId = roomId;
         this.users = {};
+        this.edit = true;
         //this.vote = new Vote();
     }
 
@@ -18,6 +19,13 @@ class Room {
             ROOMS[roomId] = room;
         }
         return room;
+    }
+
+    getInitialData() {
+        return {
+            users : this.getUsers(),
+            edit : this.edit
+        };
     }
 
     getUsers() {
