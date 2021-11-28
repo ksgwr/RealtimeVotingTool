@@ -1,26 +1,36 @@
 <template>
-    <EditButton v-model="edit" @change="onChangeEdit" />
+    <EditButton v-model="edit" />
+    <CardControlButtons v-model="cardControl" :edit="edit" />
     <div id="users">
         <p>{{ users.length }} Users</p>
     </div>
     <ul id="cards">
-        <li v-for="item in items" :key="item.index" class="card">
+        <li
+          v-for="item in items"
+          :key="item.index"
+          class="card"
+          :contenteditable="edit > 0"
+          v-on:input="onChangeItem"
+          @click="edit < 0 && clickItem($event)">
             <p>{{ item.text }}</p>
         </li>
     </ul>
     <div id="select-box">
-        <button id="select" >Select</button>
+      <VoteButton v-model="voteStatus" />
     </div>
 </template>
 
 <script>
   import io from 'socket.io-client';
 
-  import EditButton from '@/components/modules/EditButton.vue'
+  import CardControlButtons from '@/components/modules/CardControlButtons.vue';
+  import EditButton from '@/components/modules/EditButton.vue';
+  import VoteButton from '@/components/modules/VoteButton.vue'
 
   const BOOL = {
     LOADING_TRUE: 2,
     TRUE: 1,
+    NEUTRAL: 0,
     FALSE: -1,
     LOADING_FALSE: -2
   }
@@ -28,27 +38,37 @@
   export default {
     name: 'Vote',
     components: {
-      EditButton
+      EditButton,
+      CardControlButtons,
+      VoteButton
     },
     data() {
       return {
             socket: io(),
-            users: [
-                { name: "aaa" }
-            ],
-            items: [
-                { index: 0, text:'1' },
-                { index: 1, text:'2' },
-                { index: 2, text:'3' }
-            ],
-            edit : BOOL.FALSE,
-            editLoading : false
+            users: [],
+            items: [],
+            edit : BOOL.TRUE,
+            cardControl : BOOL.NEUTRAL,
+            activeItem : null,
+            voteStatus : BOOL.NEUTRAL
       }
     },
     methods: {
-      onChangeEdit(v) {
-        console.log(v);
-        console.log(`onChange $v`);
+      onChangeItem(e) {
+        console.log(e.target);
+      },
+      clickItem(e) {
+        if (this.activeItem) {
+          this.activeItem.classList.remove('selected');
+        }
+        if (this.activeItem != e.target) {
+          this.activeItem = e.target;
+          this.activeItem.classList.add('selected');
+          this.voteStatus = BOOL.FALSE;
+        } else {
+          this.activeItem = null;
+          this.voteStatus = BOOL.NEUTRAL;
+        }
       }
     },
     watch: {
@@ -57,6 +77,12 @@
         if (Math.abs(this.edit) == 2) {
           this.socket.emit('update_edit_mode_c2s', this.edit * -1 > 0);
           //setTimeout(() => (this.edit = this.edit / 2 * -1), 3000);
+        }
+      },
+      cardControl() {
+        console.log(`card control click $cardControl`);
+        if (Math.abs(this.cardControl) == 1) {
+          this.socket.emit('click_card_control', this.cardControl > 0);
         }
       }
     },
@@ -72,8 +98,14 @@
         this.edit = edit ? BOOL.TRUE : BOOL.FALSE;
       });
 
+      this.socket.on('update_items', (items) => {
+        this.cardControl = BOOL.NEUTRAL;
+        this.items = items;
+      })
+
       this.socket.on('load_data', (data) => {
         this.users = data.users;
+        this.items = data.items;
         this.edit = data.edit ? BOOL.TRUE : BOOL.FALSE;
       });
 
@@ -110,6 +142,10 @@
 .card p {
     display: table-cell;
     vertical-align: middle;
+}
+
+.selected {
+  background-color: yellow;
 }
 
 #select-box {

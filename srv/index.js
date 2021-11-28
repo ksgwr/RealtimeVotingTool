@@ -34,7 +34,12 @@ export default (app, http) => {
       console.log('update_edit_mode');
       room.edit = data;
       io.to(roomId).emit('update_edit_mode', room.edit);
-    })
+    });
+
+    socket.on('click_card_control', function(data) {
+      const items = room.updateItemsSize(data);
+      io.to(roomId).emit('update_items', items);
+    });
 
     console.log(`room: ${roomId} user: ${userId} join`);
     socket.on('disconnect', function() {

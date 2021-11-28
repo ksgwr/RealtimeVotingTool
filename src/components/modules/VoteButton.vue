@@ -1,31 +1,29 @@
 <template>
     <span>
         <v-btn
-          elevation="2"
+          elevation="5"
           outlined
           :loading="modelValue == -2"
           :disabled="modelValue == -2"
-          color="success"
+          color="primary"
           @click="toggle"
           v-if="modelValue < 0">
-            <v-icon left>mdi-pencil</v-icon>
-            EDIT</v-btn>
+            READY</v-btn>
         <v-btn
-          elevation="2"
+          elevation="5"
           outlined
           :loading="modelValue == 2"
           :disabled="modelValue == 2"
-          color="error"
+          color="primary"
           @click="toggle"
-          v-else>
-            <v-icon left>mdi-pencil</v-icon>
-            EDIT DONE</v-btn>
+          v-else-if="modelValue > 0">
+            NOT READY</v-btn>
     </span>
 </template>
 
 <script>
 export default {
-    name: 'EditButton',
+    name: 'VoteButton',
     props: {
         modelValue: Number
     },
