@@ -4,7 +4,7 @@
           elevation="2"
           outlined
           :loading="modelValue == -2"
-          :disabled="modelValue == -2"
+          :disabled="modelValue <= -2"
           color="success"
           @click="toggle"
           v-if="modelValue < 0">
@@ -14,10 +14,10 @@
           elevation="2"
           outlined
           :loading="modelValue == 2"
-          :disabled="modelValue == 2"
+          :disabled="modelValue >= 2"
           color="error"
           @click="toggle"
-          v-else>
+          v-else-if="modelValue > 0">
             <v-icon left>mdi-pencil</v-icon>
             EDIT DONE</v-btn>
     </span>

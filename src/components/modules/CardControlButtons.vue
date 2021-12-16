@@ -7,7 +7,7 @@
           :loading="Math.abs(modelValue) != 0"
           :disabled="Math.abs(modelValue) != 0"
           @click="clickDelete"
-          v-if="edit == 1">
+          >
             <v-icon dark>mdi-minus</v-icon>
         </v-btn>
         <v-btn
@@ -17,7 +17,7 @@
           :loading="Math.abs(modelValue) != 0"
           :disabled="Math.abs(modelValue) != 0"
           @click="clickAdd"
-          v-if="edit == 1">
+          >
             <v-icon dark>mdi-plus</v-icon>
             </v-btn>
     </span>
@@ -27,8 +27,7 @@
 export default {
     name: 'CardControlButtons',
     props: {
-        modelValue: Number,
-        edit: Number
+        modelValue: Number
     },
     emits: [
         'update:modelValue'

@@ -30,10 +30,16 @@ export default (app, http) => {
     });
     //io.to(roomId).emit('update_members', {});
   
+    socket.on('update_mode_c2s', function(data) {
+      console.log('update_mode', data);
+      room.setMode(data);
+      io.to(roomId).emit('update_mode', room.getMode());
+    });
+
     socket.on('update_edit_mode_c2s', function(data) {
       console.log('update_edit_mode');
-      room.edit = data;
-      io.to(roomId).emit('update_edit_mode', room.edit);
+      room.updateEdit(data);
+      io.to(roomId).emit('update_mode', room.getMode());
     });
 
     socket.on('click_card_control', function(data) {
