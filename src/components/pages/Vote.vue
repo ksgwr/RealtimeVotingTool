@@ -2,9 +2,10 @@
     <EditButton v-model="edit" />
     <CardControlButtons v-model="cardControl" v-if="mode == MODE.EDIT" />
     <VoteControlButton v-model:voteStart="voteStart" v-model:openResults="openResults"
-       v-if="MODE.BEFORE_VOTE <= mode && mode <= MODE.VOTING" />
+       v-if="MODE.BEFORE_VOTE <= mode && mode <= MODE.OPENABLE_WAITING" />
     <div id="users">
-        <p>{{ users.length }} Users</p>
+        <p><span v-if="MODE.VOTE_START <= mode && mode <= MODE.OPENABLE_WAITING">{{ votes.size }} Voted /</span>
+         {{ users.length }} Users</p>
     </div>
     <ul id="cards">
         <li
@@ -13,7 +14,7 @@
           class="card"
           :contenteditable="edit > 0"
           v-on:input="onChangeItem"
-          @click="clickItem($event)">
+          @click="clickItem($event, item)">
             <p>{{ item.text }}</p>
         </li>
     </ul>
@@ -49,6 +50,14 @@
     RESULT: 6
   };
 
+  const VOTING_RULE = {
+    // ANONYMOUS: 0,
+    // REALTIME_ANONYMOUS: 1,
+    OPEN: 2,
+    // REALTIME_ANONYMOUS_RESULT_OPEN: 3,
+    // REALTIME_FULL_OPEN : 4
+  }
+
   export default {
     name: 'Vote',
     components: {
@@ -67,11 +76,14 @@
             voteStart : BOOL.NEUTRAL,
             openResults : BOOL.NEUTRAL,
             activeItem : null,
+            activeItems : [],
             voteStatus : BOOL.NEUTRAL,
             mode: MODE.EDIT,
-            votes: {
-              size : 0
-            }
+            ruleVotingRule : VOTING_RULE.OPEN,
+            ruleVoteMax : 1,
+            ruleMinOpenable : 1,
+            ruleRemainTime : 0,
+            votes : []
       }
     },
     created() {
@@ -81,21 +93,30 @@
       onChangeItem(e) {
         console.log(e.target);
       },
-      clickItem(e) {
-        if (this.mode < MODE.VOTE_START || MODE.OPENABLE < this.mode) {
+      clickItem(e, item) {
+        if (this.mode < MODE.VOTE_START || MODE.OPENABLE < this.mode
+          || (this.voteStatus != BOOL.NEUTRAL && this.voteStatus != BOOL.FALSE)) {
           return false;
         }
-        if (this.activeItem) {
-          this.activeItem.classList.remove('selected');
+
+        // if clicked item, remove selected
+        for (let i=0;i<this.activeItems.length;i++) {
+          if (this.activeItems[i].node == e.target) {
+            this.activeItems[i].node.classList.remove('selected');
+            this.activeItems.splice(i, 1);
+            if (this.activeItems.length == 0) {
+              this.voteStatus = BOOL.NEUTRAL;
+            }
+            return true;
+          }
         }
-        if (this.activeItem != e.target) {
-          this.activeItem = e.target;
-          this.activeItem.classList.add('selected');
-          this.voteStatus = BOOL.FALSE;
-        } else {
-          this.activeItem = null;
-          this.voteStatus = BOOL.NEUTRAL;
+        if (this.activeItems.length >= this.ruleVoteMax) {
+          this.activeItems[0].node.classList.remove('selected');
+          this.activeItems.splice(0, 1);  
         }
+        e.target.classList.add('selected');
+        this.activeItems.push({node: e.target, key: item.index});
+        this.voteStatus = BOOL.FALSE;
       },
       updateMode(mode) {
         this.mode = mode;
@@ -114,8 +135,12 @@
             break;
           case MODE.VOTING:
             this.edit = BOOL.NEUTRAL;
-            this.voteStart = BOOL.FALSE;
+            this.voteStart = BOOL.DISABLE_TRUE;
             this.openResults = BOOL.NEUTRAL;
+            break;
+          case MODE.OPENABLE:
+            this.voteStart = BOOL.NEUTRAL;
+            this.openResults = BOOL.FALSE;
             break;
           default:
         }
@@ -145,6 +170,16 @@
         if (Math.abs(this.openResults) == 2) {
           this.socket.emit('update_mode_c2s', MODE.RESULT);
         }
+      },
+      voteStatus() {
+        if (this.voteStatus == 2) {
+          // cancel vote
+          this.socket.emit('update_vote_c2s', null);
+        } else if (this.voteStatus == -2) {
+          // ready vote
+          console.log(this.activeItems.map(x => x.key));
+          this.socket.emit('update_vote_c2s', this.activeItems.map(x => x.key));
+        }
       }
     },
     mounted() {
@@ -161,13 +196,27 @@
       this.socket.on('update_items', (items) => {
         this.cardControl = BOOL.NEUTRAL;
         this.items = items;
-      })
+      });
+
+      this.socket.on('update_votes', (votes) => {
+        console.log('update_vote');
+        console.log(votes);
+        this.votes = votes;
+        this.updateMode(votes.mode);
+        if (Math.abs(this.voteStatus) == 2) {
+          this.voteStatus = this.voteStatus * -1 / 2;
+        }
+      });
 
       this.socket.on('load_data', (data) => {
         this.users = data.users;
         this.items = data.items;
         this.updateMode(data.mode);
         this.votes = data.votes;
+        this.ruleVotingRule = data.rules.votingRule;
+        this.ruleVoteMax = data.rules.voteMax;
+        this.ruleMinOpenable = data.rules.minOpenable;
+        //this.ruleRemainTime = data.rules.remainTime;
       });
 
       this.socket.on('connect', () => {

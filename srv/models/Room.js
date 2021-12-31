@@ -22,7 +22,6 @@ class Room {
     constructor(roomId) {
         this.roomId = roomId;
         this.users = {};
-        this.edit = true;
         this.mode = MODE.EDIT;
         this.items = [
             { index: 0, text:'1' },
@@ -43,13 +42,8 @@ class Room {
 
     setMode(mode) {
         this.mode = mode;
-    }
-
-    updateEdit(enable) {
-        if (enable) {
-            this.mode = MODE.EDIT;
-        } else {
-            this.mode = MODE.BEFORE_VOTE;
+        if (mode == MODE.VOTE_START) {
+            this.vote.initVote();
         }
     }
 
@@ -60,10 +54,10 @@ class Room {
     getInitialData() {
         return {
             users : this.getUsers(),
-            edit : this.edit,
             mode : this.mode,
             items : this.items,
-            votes : this.getOnGoingResult()
+            votes : this.getOnGoingResult(),
+            rules : this.vote.getRules()
         };
     }
 

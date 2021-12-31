@@ -39,3 +39,15 @@ $ heroku config:set NPM_CONFIG_PRODUCTION=false
 ```
 $ sh deploy.sh
 ```
+
+## Debug Tips (Memo)
+
+in Chrome Console
+
+```
+$vm.data
+```
+
+## Bugs
+
+* 投票選択状態がリロード時に保持されず複数投票可能(だが、システム的にはuserId管理なのでId変わらなければ1票になるはず)
