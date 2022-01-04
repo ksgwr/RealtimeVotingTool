@@ -49,6 +49,7 @@ export default (app, http) => {
     });
 
     socket.on('click_card_control', function(data) {
+      console.log('click_card_control');
       const items = room.updateItemsSize(data);
       io.to(roomId).emit('update_items', items);
     });

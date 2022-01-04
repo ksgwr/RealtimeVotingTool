@@ -156,7 +156,7 @@
       },
       cardControl() {
         console.log(`card control click $cardControl`);
-        if (Math.abs(this.cardControl) == 2) {
+        if (Math.abs(this.cardControl) == 1) {
           this.socket.emit('click_card_control', this.cardControl > 0);
         }
       },
