@@ -21,6 +21,7 @@
     <div id="select-box">
       <VoteButton v-model="voteStatus" />
     </div>
+    <router-link to="/room/abc/results/1">Dialog Test</router-link>
 </template>
 
 <script>
@@ -141,6 +142,11 @@
           case MODE.OPENABLE:
             this.voteStart = BOOL.NEUTRAL;
             this.openResults = BOOL.FALSE;
+            break;
+          case MODE.RESULT:
+            this.edit = BOOL.FALSE;
+            this.voteStart = BOOL.NEUTRAL;
+            this.openResults = BOOL.NEUTRAL;
             break;
           default:
         }

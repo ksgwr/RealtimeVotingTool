@@ -4,6 +4,7 @@
     <router-link to="/room/abc">Room</router-link> |
     <router-link to="/about">About</router-link>
   </div>
+  <router-view name="dialog"></router-view>
   <router-view/>
 </template>
 

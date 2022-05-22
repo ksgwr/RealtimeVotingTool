@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Room from '../views/Room.vue'
+import RoomResults from '../views/RoomResults.vue'
 
 const routes = [
   {
@@ -12,6 +13,14 @@ const routes = [
     path: '/room/:id',
     name: 'Room',
     component: Room
+  },
+  {
+    path: '/room/:id/results/:history',
+    name: 'RoomResults',
+    components: {
+      default: Room,
+      dialog: RoomResults
+    }
   },
   {
     path: '/about',
