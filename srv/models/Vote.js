@@ -58,6 +58,9 @@ class Vote {
 
     getSummaryResult() {
         const result = {}
+        if (Object.keys(this.data).length == 0) {
+            return result;
+        }
         for (const [userId, indexes] of this.data.entries()) {
             for (const [rank, index] of indexes.entries()) {
                 if (result[index] === undefined) {

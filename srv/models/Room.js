@@ -29,6 +29,7 @@ class Room {
             { index: 2, text:'3' }
         ];
         this.vote = new Vote();
+        this.histories = [];
     }
 
     static getOrCreateRoom(roomId) {
@@ -108,6 +109,23 @@ class Room {
 
     getOnGoingResult() {
         return this.vote.getOnGoingResult();
+    }
+
+    getResults() {
+        // TODO: 投票締め切りしてthis.historiesにデータを保存、ここからは単純にgetするだけにする
+        // このクラス内でその時点のルールに従って結果の匿名化、抽象化などを行う
+        //return [this.vote.getSummaryResult()];
+        // dummy data
+        return [
+            {
+                id:1,
+                items:[
+                    { index: 0, text:'1', result:[{userid:'aaa', rank:1}]},
+                    { index: 1, text:'2', result:[{userid:'bbb', rank:1}, {userid:'ccc', rank:1}]},
+                    { index: 2, text:'3' }
+                ]
+            }
+        ];
     }
 }
 

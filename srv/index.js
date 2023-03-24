@@ -10,6 +10,11 @@ export default (app, http) => {
   app.use(express.json());
   app.set('port', PORT);
 
+  app.get('/result', function(req, res){
+    const room = Room.getOrCreateRoom(req.query.roomId);
+    res.send(room.getResults());
+  });
+
   const io = socketIO(http);
   io.sockets.on('connection', function(socket){
     const roomId = Util.getRoomId(socket.handshake.headers.referer);

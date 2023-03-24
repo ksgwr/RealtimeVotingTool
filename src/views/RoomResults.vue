@@ -1,4 +1,5 @@
 <template>
+  
   <v-row justify="center">
     <v-dialog
       v-model="dialog"
@@ -9,7 +10,7 @@
         <v-card-title class="text-h5 grey lighten-2">
           Privacy Policy
         </v-card-title>
-
+        <Result />
         <v-card-text>
           Lorem ipsum dolor sit amet
         </v-card-text>
@@ -32,8 +33,13 @@
 </template>
 
 <script>
+import Result from '@/components/pages/Result.vue'
+
 export default {
   name: 'RoomResults',
+  components: {
+    Result
+  },
   data () {
       return {
           dialog: true,
