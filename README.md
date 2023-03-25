@@ -5,7 +5,7 @@
 
 ## Demo
 
-https://realtime-voting-tool.herokuapp.com/
+https://realtime-voting-tool.onrender.com/
 
 ## How to develop
 
@@ -25,19 +25,6 @@ $ open http://localhost:3000/
 ```
 $ npm run serve
 $ open http://localhost:8080/room/abc
-```
-
-### Deploy to heroku
-
-once setting
-
-```
-$ heroku login
-$ heroku config:set NPM_CONFIG_PRODUCTION=false
-```
-
-```
-$ sh deploy.sh
 ```
 
 ## Debug Tips (Memo)
