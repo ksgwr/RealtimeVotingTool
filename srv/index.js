@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import socketIO from 'socket.io';
 
@@ -9,6 +10,10 @@ const PORT = process.env.PORT || 3000;
 export default (app, http) => {
   app.use(express.json());
   app.set('port', PORT);
+  // for fallback
+  app.use(cors({
+    origin: 'http://localhost:8080'
+  }));
 
   app.get('/result', function(req, res){
     const room = Room.getOrCreateRoom(req.query.roomId);
