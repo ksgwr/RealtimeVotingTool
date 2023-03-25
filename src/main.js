@@ -7,6 +7,7 @@ import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 
 //window.location
+axios.defaults.baseURL = window.location.origin;
 //axios.defaults.baseURL = 'http://localhost:3000';
 //axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
