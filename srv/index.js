@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 export default (app, http) => {
   app.use(express.json());
   app.set('port', PORT);
-  // for fallback
+  // for fallback in developing
   app.use(cors({
     origin: 'http://localhost:8080'
   }));
