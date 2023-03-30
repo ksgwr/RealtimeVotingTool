@@ -124,6 +124,14 @@ class Room {
                     { index: 1, text:'2', result:[{userid:'bbb', rank:1}, {userid:'ccc', rank:1}]},
                     { index: 2, text:'3' }
                 ]
+            },
+            {
+                id:2,
+                items:[
+                    { index:0, text:'1', results:[{rank:1}, {rank:1}]},
+                    { index:1, text:'2'},
+                    { index:2, text:'3'}
+                ]
             }
         ];
     }

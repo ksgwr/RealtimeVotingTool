@@ -10,7 +10,7 @@
         <v-card-title class="text-h5 grey lighten-2">
           Privacy Policy
         </v-card-title>
-        <Result />
+        <Result :id="id" :history="history" />
         <v-card-text>
           Lorem ipsum dolor sit amet
         </v-card-text>
@@ -37,6 +37,7 @@ import Result from '@/components/pages/Result.vue'
 
 export default {
   name: 'RoomResults',
+  props: ['id', 'history'],
   components: {
     Result
   },

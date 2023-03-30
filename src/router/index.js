@@ -21,7 +21,8 @@ const routes = [
     components: {
       default: Room,
       dialog: RoomResults
-    }
+    },
+    props: true
   },
   {
     path: '/about',
