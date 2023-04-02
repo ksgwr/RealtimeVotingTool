@@ -1,6 +1,6 @@
 <template>
   Room
-  <Vote />
+  <Vote :id="id"/>
 </template>
 
 <script>
@@ -9,7 +9,7 @@ import Vote from '@/components/pages/Vote.vue'
 
 export default {
   name: 'Room',
-  props: ['id', 'history'], // dummy props
+  props: ['id', 'history'],
   components: {
     Vote
   }

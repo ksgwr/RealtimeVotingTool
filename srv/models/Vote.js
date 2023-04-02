@@ -61,8 +61,8 @@ class Vote {
         if (Object.keys(this.data).length == 0) {
             return result;
         }
-        for (const [userId, indexes] of this.data.entries()) {
-            for (const [rank, index] of indexes.entries()) {
+        for (const [userId, indexes] of Object.entries(this.data)) {
+            for (const [rank, index] of Object.entries(indexes)) {
                 if (result[index] === undefined) {
                     result[index] = [];
                 }
@@ -73,7 +73,6 @@ class Vote {
                 });
             }
         }
-
         return result;
     }
 

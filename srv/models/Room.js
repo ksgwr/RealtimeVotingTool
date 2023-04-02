@@ -41,10 +41,31 @@ class Room {
         return room;
     }
 
+    countingResult() {
+        let items = JSON.parse(JSON.stringify(this.items));
+        let results = this.vote.getSummaryResult();
+
+        console.log("summary results");
+        console.log(JSON.stringify(results));
+
+        for (let i=0;i<items.length;i++) {
+            if (items[i].index in results) {
+                items[i].results = results[items[i].index];
+            }
+        }
+
+        this.histories.push({
+           id : this.histories.length + 1,
+           items : items
+        });
+    }
+
     setMode(mode) {
         this.mode = mode;
         if (mode == MODE.VOTE_START) {
             this.vote.initVote();
+        } else if (mode == MODE.RESULT) {
+            this.countingResult();
         }
     }
 
@@ -58,7 +79,8 @@ class Room {
             mode : this.mode,
             items : this.items,
             votes : this.getOnGoingResult(),
-            rules : this.vote.getRules()
+            rules : this.vote.getRules(),
+            voteId : this.histories.length + 1
         };
     }
 
@@ -116,6 +138,7 @@ class Room {
         // このクラス内でその時点のルールに従って結果の匿名化、抽象化などを行う
         //return [this.vote.getSummaryResult()];
         // dummy data
+        /*
         return [
             {
                 id:1,
@@ -133,7 +156,8 @@ class Room {
                     { index:2, text:'3'}
                 ]
             }
-        ];
+        ];*/
+        return this.histories;
     }
 }
 

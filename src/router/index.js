@@ -13,7 +13,8 @@ const routes = [
   {
     path: '/room/:id',
     name: 'Room',
-    component: Room
+    component: Room,
+    props: true
   },
   {
     path: '/room/:id/results/:history',

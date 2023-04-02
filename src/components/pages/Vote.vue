@@ -61,6 +61,7 @@
 
   export default {
     name: 'Vote',
+    props: ['id'],
     components: {
       EditButton,
       CardControlButtons,
@@ -84,7 +85,8 @@
             ruleVoteMax : 1,
             ruleMinOpenable : 1,
             ruleRemainTime : 0,
-            votes : []
+            votes : [],
+            voteId : 1
       }
     },
     created() {
@@ -145,8 +147,9 @@
             break;
           case MODE.RESULT:
             this.edit = BOOL.FALSE;
-            this.voteStart = BOOL.NEUTRAL;
+            this.voteStart = BOOL.FALSE;
             this.openResults = BOOL.NEUTRAL;
+            this.$router.push(`/room/${this.id}/results/${this.voteId++}`);
             break;
           default:
         }
@@ -215,6 +218,7 @@
       });
 
       this.socket.on('load_data', (data) => {
+        console.log(`load_data mode ${data.mode}`);
         this.users = data.users;
         this.items = data.items;
         this.updateMode(data.mode);
@@ -223,6 +227,7 @@
         this.ruleVoteMax = data.rules.voteMax;
         this.ruleMinOpenable = data.rules.minOpenable;
         //this.ruleRemainTime = data.rules.remainTime;
+        this.voteId = data.voteId;
       });
 
       this.socket.on('connect', () => {
