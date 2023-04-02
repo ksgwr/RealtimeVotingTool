@@ -120,8 +120,8 @@ class Room {
             {
                 id:1,
                 items:[
-                    { index: 0, text:'1', result:[{userid:'aaa', rank:1}]},
-                    { index: 1, text:'2', result:[{userid:'bbb', rank:1}, {userid:'ccc', rank:1}]},
+                    { index: 0, text:'1', results:[{userid:'aaa', rank:1}]},
+                    { index: 1, text:'2', results:[{userid:'bbb', rank:1}, {userid:'ccc', rank:1}]},
                     { index: 2, text:'3' }
                 ]
             },

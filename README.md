@@ -52,7 +52,7 @@ https://dev.to/berniwittmann/handling-dialogs-with-vue-router-29ji
 
 -- v1 --
 
-* 抽選モードの作成
+* 抽選モードの作成(backface-visibilityを使う)
 
 -- v2 --
 

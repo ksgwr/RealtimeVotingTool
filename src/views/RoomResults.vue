@@ -8,12 +8,9 @@
     >
       <v-card>
         <v-card-title class="text-h5 grey lighten-2">
-          Privacy Policy
+          Results History
         </v-card-title>
         <Result :id="id" :history="history" />
-        <v-card-text>
-          Lorem ipsum dolor sit amet
-        </v-card-text>
 
         <v-divider></v-divider>
 
@@ -24,7 +21,7 @@
             text
             @click="close()"
           >
-            I accept
+            Close
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -48,7 +45,7 @@ export default {
   },
   methods: {
     close () {
-      this.$router.back()
+      this.$router.push(`/room/${this.id}`);
     }
   }
 }
