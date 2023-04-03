@@ -13,7 +13,7 @@
           :key="item.index"
           class="card"
           :contenteditable="edit > 0"
-          v-on:input="onChangeItem"
+          v-on:input="onChangeItem($event, item)"
           @click="clickItem($event, item)">
             <p>{{ item.text }}</p>
         </li>
@@ -77,7 +77,7 @@
             cardControl : BOOL.NEUTRAL,
             voteStart : BOOL.NEUTRAL,
             openResults : BOOL.NEUTRAL,
-            activeItem : null,
+            //activeItem : null,
             activeItems : [],
             voteStatus : BOOL.NEUTRAL,
             mode: MODE.EDIT,
@@ -93,8 +93,11 @@
       this.MODE = MODE;
     },
     methods: {
-      onChangeItem(e) {
+      onChangeItem(e, item) {
         console.log(e.target);
+        item.text = e.target.innerText;
+        console.log(item);
+        this.socket.emit('edit_card_text', item);
       },
       clickItem(e, item) {
         if (this.mode < MODE.VOTE_START || MODE.OPENABLE < this.mode
@@ -149,6 +152,11 @@
             this.edit = BOOL.FALSE;
             this.voteStart = BOOL.FALSE;
             this.openResults = BOOL.NEUTRAL;
+            this.voteStatus = BOOL.NEUTRAL;
+            for (let i=0;i<this.activeItems.length;i++) {
+              this.activeItems[i].node.classList.remove('selected');
+            }
+            this.activeItems.splice(0);
             this.$router.push(`/room/${this.id}/results/${this.voteId++}`);
             break;
           default:

@@ -119,6 +119,14 @@ class Room {
         return this.items;
     }
 
+    updateItemText(index, text) {
+        if (index < 0 || this.items.length <= index) {
+            return this.items;
+        }
+        this.items[index].text = text;
+        return this.items;
+    }
+
     voteOk(userId, itemIndexes) {
         const uid = Util.hash(userId + SALT);
         this.vote.vote(userId, itemIndexes);

@@ -64,6 +64,13 @@ export default (app, http) => {
       io.to(roomId).emit('update_items', items);
     });
 
+    socket.on('edit_card_text' ,function(data) {
+      console.log('edit_card_text');
+      console.log(JSON.stringify(data));
+      const items = room.updateItemText(data.index, data.text);
+      io.to(roomId).emit('update_items', items);
+    });
+
     console.log(`room: ${roomId} user: ${userId} join`);
     socket.on('disconnect', function() {
       const users = room.updateUser(userId, null);
