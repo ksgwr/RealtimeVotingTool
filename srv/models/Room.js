@@ -146,7 +146,7 @@ class Room {
         // このクラス内でその時点のルールに従って結果の匿名化、抽象化などを行う
         //return [this.vote.getSummaryResult()];
         // dummy data
-        
+        /*
         return [
             {
                 id:1,
@@ -164,8 +164,8 @@ class Room {
                     { index:2, text:'3'}
                 ]
             }
-        ];
-        //return this.histories;
+        ];*/
+        return this.histories;
     }
 }
 
