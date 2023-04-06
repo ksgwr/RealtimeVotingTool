@@ -146,13 +146,13 @@ class Room {
         // このクラス内でその時点のルールに従って結果の匿名化、抽象化などを行う
         //return [this.vote.getSummaryResult()];
         // dummy data
-        /*
+        
         return [
             {
                 id:1,
                 items:[
-                    { index: 0, text:'1', results:[{userid:'aaa', rank:1}]},
-                    { index: 1, text:'2', results:[{userid:'bbb', rank:1}, {userid:'ccc', rank:1}]},
+                    { index: 0, text:'1', results:[{userId:'aaa', rank:1}]},
+                    { index: 1, text:'2', results:[{userId:'bbb', rank:1}, {userId:'ccc', rank:1}]},
                     { index: 2, text:'3' }
                 ]
             },
@@ -164,8 +164,8 @@ class Room {
                     { index:2, text:'3'}
                 ]
             }
-        ];*/
-        return this.histories;
+        ];
+        //return this.histories;
     }
 }
 

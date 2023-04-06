@@ -17,25 +17,61 @@
                         <div class="card-contents">
                             <p>{{item.text}}</p>
                         </div>
-                        <div class="badge" v-if="item.point > 0">{{item.point}}</div>
+                        <div class="clickable-badge" @click="item.detail && openDialog(item)" v-if="item.detail && item.point > 1"
+                            >{{item.point}}
+                        </div>
+                        <div class="icon-badge" v-else-if="item.detail && item.results.length == 1"
+                            ><UserIcon :user="item.results[0]" tooltip="true" />
+                        </div>
+                        <div class="badge" v-else-if="item.point > 0"
+                            >{{item.point}}
+                        </div>
                         </li>
                     </ul>
                 </div>
             </v-expansion-panel-text>
         </v-expansion-panel>
     </v-expansion-panels>
+    <v-dialog
+        v-model="dialog"
+        width="auto">
+        <v-card>
+            <v-card-text>
+                <v-container>
+                    <v-row>
+                        <v-col v-for="result in dialogItem.results"
+                            :key="result.userId"
+                        >
+                            <UserIcon :user="result" nameView="true" />
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="primary" block @click="dialog = false">Close</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
 
+    import UserIcon from '@/components/modules/UserIcon.vue';
+
     export default {
         name: 'Result',
         props: ['id', 'history'],
+        components: {
+            UserIcon
+        },
         data() {
             return {
                 results : [],
                 panel: [0],
-                viewType: 0
+                viewType: 0,
+                dailogItem : null,
+                dialog : false,
+                toolTipShow : false
             }
         },
         created() {
@@ -59,6 +95,10 @@
                             let item = items[j];
                             let point = item.results == undefined ? 0 : item.results.length;
                             this.results[i].items[j].point = point;
+
+                            this.results[i].items[j].detail = item.results != undefined &&
+                                    item.results.length > 0 &&
+                                    item.results[0].userId != undefined;
                         }
                     }
 
@@ -67,8 +107,15 @@
                 });
         },
         methods: {
+
             changeUrl(history) {
                 this.$router.push(`/room/${this.id}/results/${history}`);
+            },
+
+            openDialog(item) {
+                console.log(item.detail);
+                this.dialogItem = item;
+                this.dialog = true;
             }
         }
     }
@@ -111,11 +158,39 @@
     width: 50px;
     height: 50px;
     line-height: 50px;
+    box-shadow: 0 0 5px #888;
+    border-radius: 50%;
+    background: #888;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.clickable-badge {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    top: -40px;
+    left: -10px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
     box-shadow: 0 0 5px #333;
     border-radius: 50%;
     background: #333;
     color: white;
     font-size: 1.2rem;
     text-align: center;
+}
+
+.icon-badge {
+    position: relative;
+    display: block;
+    top: -40px;
+    left: -40px;
+}
+
+.hand-cursor {
+  cursor: pointer;
 }
 </style>
