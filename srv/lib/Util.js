@@ -17,7 +17,8 @@ class Util {
     }
 
     static getRoomId(refererUrl) {
-        return refererUrl.substring(refererUrl.lastIndexOf("/room/")+6);
+        const lastIndex = refererUrl.match("/results/[0-9]+") ? refererUrl.lastIndexOf("/results/") : refererUrl.length;
+        return refererUrl.substring(refererUrl.lastIndexOf("/room/")+6, lastIndex);
     }
 }
 

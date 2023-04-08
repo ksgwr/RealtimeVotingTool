@@ -20,12 +20,24 @@ export default (app, http) => {
     res.send(room.getResults());
   });
 
+  app.post('/issueUserId', function(req, res){
+    const userId = Util.issueUserId();
+    res.send(userId);
+  });
+
+  app.post('/roomUserId', function(req, res){
+    const room = Room.getOrCreateRoom(req.body.roomId);
+    const userId = req.body.userId;
+    const roomUserId = room.getRoomOpenUserId(userId);
+    res.send(roomUserId);
+  });
+
   const io = socketIO(http);
   io.sockets.on('connection', function(socket){
     const roomId = Util.getRoomId(socket.handshake.headers.referer);
     // TODO: validate roomId
     
-    const userId = Util.issueUserId();  
+    const userId = socket.handshake.query.userId;  
   
     socket.join(roomId);
     const room = Room.getOrCreateRoom(roomId);

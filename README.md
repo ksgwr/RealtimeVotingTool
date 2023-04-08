@@ -37,19 +37,11 @@ $vm.data
 
 ## Bugs
 
-* 投票選択状態がリロード時に保持されず複数投票可能(だが、システム的にはuserId管理なのでId変わらなければ1票になるはず)
 
 ## Roadmap (TODO)
 
-* Open Results画面の作成
-DialogのURLをrouterで表現する
-https://dev.to/berniwittmann/handling-dialogs-with-vue-router-29ji
-
-* History画面の作成
 * ルール詳細画面の作成
 * デザインの修正
-* ユーザーIDをローカルストレージに移行
-
 -- v1 --
 
 * 抽選モードの作成(backface-visibilityを使う)

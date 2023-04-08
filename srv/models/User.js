@@ -2,7 +2,9 @@ class User {
 
     constructor(userId, data) {
         this.id = userId;
-        this.update(data);
+        if (data != null) {
+            this.update(data);
+        }
     }
 
     update(data) {

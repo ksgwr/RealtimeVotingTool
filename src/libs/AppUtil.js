@@ -24,6 +24,9 @@ class AppUtil {
     ];
 
     static getUserColor(userId) {
+        if (userId == '') {
+            return '';
+        }
         let seed = 0;
         for (let i=0;i<userId.length;i++) {
             seed += userId.charCodeAt(i);

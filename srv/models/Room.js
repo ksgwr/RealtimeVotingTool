@@ -127,14 +127,20 @@ class Room {
         return this.items;
     }
 
+    getRoomOpenUserId(userId) {
+        const res = Util.hash(userId + SALT + this.roomId);
+        console.log(`userId:${userId} roomId:${this.roomId} res:${res}`);
+        return res;
+    }
+
     voteOk(userId, itemIndexes) {
-        const uid = Util.hash(userId + SALT);
-        this.vote.vote(userId, itemIndexes);
+        const uid = this.getRoomOpenUserId(userId);
+        this.vote.vote(uid, itemIndexes);
     }
 
     voteCancel(userId) {
-        const uid = Util.hash(userId + SALT);
-        this.vote.cancel(userId);
+        const uid = this.getRoomOpenUserId(userId);
+        this.vote.cancel(uid);
     }
 
     getOnGoingResult() {

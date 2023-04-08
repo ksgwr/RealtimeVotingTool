@@ -21,7 +21,9 @@
     <div id="select-box">
       <VoteButton v-model="voteStatus" />
     </div>
-    <router-link to="/room/abc/results/1">Dialog Test</router-link>
+    <div id="history">
+      <v-btn @click="openHistory"><v-icon left>mdi-history</v-icon>History</v-btn>
+    </div>
 </template>
 
 <script>
@@ -70,7 +72,11 @@
     },
     data() {
       return {
-            socket: io(),
+            socket: io({
+              query : {
+                userId : localStorage.uid
+              }
+            }),
             users: [],
             items: [],
             edit : BOOL.TRUE,
@@ -93,6 +99,9 @@
       this.MODE = MODE;
     },
     methods: {
+      openHistory() {
+        this.$router.push(`/room/${this.id}/results/0`);
+      },
       onChangeItem(e, item) {
         console.log(e.target);
         item.text = e.target.innerText;
@@ -279,5 +288,10 @@
 
 #select-box {
     text-align: center;
+}
+
+#history {
+    text-align: right;
+    margin-right: 20px;
 }
 </style>

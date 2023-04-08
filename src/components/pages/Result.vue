@@ -21,7 +21,7 @@
                             >{{item.point}}
                         </div>
                         <div class="icon-badge" v-else-if="item.detail && item.results.length == 1"
-                            ><UserIcon :user="item.results[0]" tooltip="true" />
+                            ><UserIcon :user="item.results[0]" :tooltip="true" />
                         </div>
                         <div class="badge" v-else-if="item.point > 0"
                             >{{item.point}}
