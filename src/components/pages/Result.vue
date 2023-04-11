@@ -34,6 +34,7 @@
     </v-expansion-panels>
     <v-dialog
         v-model="dialog"
+        scrollable
         width="auto">
         <v-card>
             <v-card-text>

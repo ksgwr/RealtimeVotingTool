@@ -5,7 +5,10 @@
        v-if="MODE.BEFORE_VOTE <= mode && mode <= MODE.OPENABLE_WAITING" />
     <div id="users">
         <p><span v-if="MODE.VOTE_START <= mode && mode <= MODE.OPENABLE_WAITING">{{ votes.size }} Voted /</span>
-         {{ users.length }} Users</p>
+         {{ users.length }} Users
+         &nbsp;
+         <v-btn color="gray" icon="mdi-cog"></v-btn>
+         </p>
     </div>
     <ul id="cards">
         <li

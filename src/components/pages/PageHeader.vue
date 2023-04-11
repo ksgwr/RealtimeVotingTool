@@ -3,10 +3,29 @@
   <h2 id="logo">
     RealTimeVotingTool
   </h2>
-  <span id="user-icon">
-    <UserIcon :user="{userId: openUserId, name: name}" :nameView="true" />
+  <span id="user-icon" @click="dialog = true">
+    <UserIcon :user="{userId: openUserId, name: name, anonymous: anonymous}" :nameView="true" />
   </span>
 </div>
+<v-dialog
+      v-model="dialog"
+      width="300px"
+>
+  <v-card>
+    <v-card-text>
+      <v-layout row align-center>
+        <UserIcon :user="{userId: openUserId, name: name}" iconSize="5em" />
+        <v-text-field v-model="name" label="Name" size="5em"></v-text-field>
+      </v-layout>
+      <v-layout row justify-end>
+        <v-checkbox v-model="anonymous" label="Anonymous Mode"></v-checkbox>
+      </v-layout>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="primary" block @click="dialog = false">Close</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
 </template>
 
 <script>
@@ -21,7 +40,9 @@ export default {
       return {
         userId : '',
         openUserId : '',
-        name: undefined
+        name : undefined,
+        anonymous: false,
+        dialog : false
       }
     },
     mounted() {
@@ -33,6 +54,12 @@ export default {
             localStorage.uid = res.data;
             this.userId = res.data;
           })
+      }
+      if (localStorage.name) {
+        this.name = localStorage.name;
+      }
+      if (localStorage.anon) {
+        this.anonymous = localStorage.anon;
       }
     },
     watch: {
@@ -51,6 +78,12 @@ export default {
         }).then((res) => {
           this.openUserId = res.data;
         });
+      },
+      name(newName) {
+        localStorage.name = newName;
+      },
+      anonymous(newAnon) {
+        localStorage.anon = newAnon;
       }
     }
 }

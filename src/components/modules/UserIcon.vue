@@ -1,6 +1,6 @@
 <template>
-    <v-avatar>
-    <v-icon :color="getColor()" size="x-large">
+    <v-avatar :size="iconSize">
+    <v-icon :color="getColor()" :size="iconSize">
         mdi-account-circle
     </v-icon>
     <v-tooltip
@@ -8,7 +8,7 @@
             location="bottom"
             v-if="tooltip"
         >
-        <span v-if="user.name == undefined">
+        <span v-if="user.name == undefined || user.anonymous">
             Anonymous
         </span>
         <span v-else>
@@ -16,7 +16,7 @@
         </span>
     </v-tooltip>
     </v-avatar>
-    <span v-if="nameView && user.name == undefined">
+    <span v-if="nameView && (user.name == undefined || user.anonymous)">
         Anonymous
     </span>
     <span v-else-if="nameView">
@@ -39,6 +39,11 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        iconSize : {
+            type: String,
+            required: false,
+            default: 'x-large'
         }
     },
     methods: {
