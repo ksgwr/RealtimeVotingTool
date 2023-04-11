@@ -55,7 +55,9 @@ export default (app, http) => {
     socket.on('update_mode_c2s', function(data) {
       console.log('update_mode', data);
       room.setMode(data);
+      const mode = room.getMode();
       io.to(roomId).emit('update_mode', room.getMode());
+      room.setNextModeIfNeeded();
     });
 
     socket.on('update_vote_c2s', function(data) {

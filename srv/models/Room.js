@@ -73,6 +73,12 @@ class Room {
         return this.mode;
     }
 
+    setNextModeIfNeeded() {
+        if (this.mode == MODE.RESULT) {
+            this.mode = MODE.BEFORE_VOTE;
+        }
+    }
+
     getInitialData() {
         return {
             users : this.getUsers(),
