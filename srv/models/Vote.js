@@ -20,6 +20,18 @@ class Vote {
         this.data = {};
     }
 
+    updateVotingRule(votingRule) {
+        this.votingRule = votingRule;
+    }
+
+    updateVoteMax(voteMax) {
+        this.voteMax = voteMax;
+    }
+
+    updateMinOpenable(minOpenable) {
+        this.minOpenable = minOpenable;
+    }
+
     initVote() {
         this.data = {};
     }

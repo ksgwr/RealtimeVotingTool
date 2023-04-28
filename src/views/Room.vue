@@ -1,5 +1,4 @@
 <template>
-  Room
   <Vote :id="id"/>
 </template>
 

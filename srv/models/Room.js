@@ -108,6 +108,18 @@ class Room {
         return Object.values(this.users);
     }
 
+    updateVotingRule(data) {
+        return this.vote.updateVotingRule(data);
+    }
+
+    updateVoteMax(data) {
+        return this.vote.updateVoteMax(data);
+    }
+
+    updateMinOpenable(data) {
+        return this.vote.updateMinOpenable(data);
+    }
+
     // add if true add item else delete last item 
     updateItemsSize(add) {
         if (add) {

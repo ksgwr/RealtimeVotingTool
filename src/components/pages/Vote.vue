@@ -7,9 +7,23 @@
         <p><span v-if="MODE.VOTE_START <= mode && mode <= MODE.OPENABLE_WAITING">{{ votes.size }} Voted /</span>
          {{ users.length }} Users
          &nbsp;
-         <v-btn color="gray" icon="mdi-cog"></v-btn>
+        <v-btn icon="mdi-cog" :color="showRule > 0 ? 'grey': null" @click="toggleRule"></v-btn>
          </p>
     </div>
+    <transition name="rule"><div id="rule" v-show="showRule > 0">
+      <h3>ルール</h3>
+      <v-radio-group v-model="ruleVotingRule" label="投票モード" :disabled="mode != MODE.EDIT">
+        <v-radio label="完全匿名" value="1"></v-radio>
+        <v-radio label="リアルタイム票数のみ・結果匿名" value="2"></v-radio>
+        <v-radio label="リアルタイム票数のみ・結果公開" value="3"></v-radio>
+        <v-radio label="完全公開" value="4"></v-radio>
+      </v-radio-group>
+      <p>
+        <v-text-field label="投票最大数" v-model="ruleVoteMax" inputmode="numeric" type="number" suffix="票/人" :disabled="mode != MODE.EDIT"></v-text-field>
+      </p>
+      <v-switch label="集計可能最低人数" v-model="ruleMinOpenableEnable" :disabled="mode != MODE.EDIT"></v-switch>
+      <v-switch label="投票制限時間" v-model="ruleRemainTimeEnable" :disabled="mode != MODE.EDIT"></v-switch>
+    </div></transition>
     <ul id="cards">
         <li
           v-for="item in items"
@@ -90,9 +104,12 @@
             activeItems : [],
             voteStatus : BOOL.NEUTRAL,
             mode: MODE.EDIT,
+            showRule: BOOL.FALSE,
             ruleVotingRule : VOTING_RULE.OPEN,
             ruleVoteMax : 1,
+            ruleMinOpenableEnable : false,
             ruleMinOpenable : 1,
+            ruleRemainTimeEnable : false,
             ruleRemainTime : 0,
             votes : [],
             voteId : 1
@@ -136,16 +153,21 @@
         this.activeItems.push({node: e.target, key: item.index});
         this.voteStatus = BOOL.FALSE;
       },
+      toggleRule() {
+        this.showRule = this.showRule == BOOL.TRUE ? BOOL.FALSE : BOOL.TRUE;
+      },
       updateMode(mode) {
         this.mode = mode;
         switch(mode) {
           case MODE.EDIT:
             this.edit = BOOL.TRUE;
+            this.showRule = BOOL.TRUE;
             break;
           case MODE.BEFORE_VOTE:
             this.edit = BOOL.FALSE;
             this.voteStart = BOOL.FALSE;
             this.openResults = BOOL.NEUTRAL;
+            this.showRule = BOOL.FALSE;
             break;
           case MODE.VOTE_START:
             this.edit = BOOL.NEUTRAL;
@@ -287,6 +309,28 @@
 
 .selected {
   background-color: yellow;
+}
+
+#rule {
+  border: 1px solid;
+  width: 50%;
+  float: right;
+}
+
+.rule-enter-to {
+  transition: transform 1.3s ease-out;
+  transform: translateX(0px);
+}
+.rule-enter-from {
+  transform: translateX(600px);
+}
+
+.rule-leave-to {
+  transition: transform 1.3s ease-out;
+  transform: translateX(600px);
+}
+.rule-leave-from {
+  transform: translateX(0px);
 }
 
 #select-box {
