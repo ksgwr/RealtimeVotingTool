@@ -12,17 +12,24 @@
     </div>
     <transition name="rule"><div id="rule" v-show="showRule > 0">
       <h3>ルール</h3>
-      <v-radio-group v-model="ruleVotingRule" label="投票モード" :disabled="mode != MODE.EDIT">
-        <v-radio label="完全匿名" value="1"></v-radio>
-        <v-radio label="リアルタイム票数のみ・結果匿名" value="2"></v-radio>
-        <v-radio label="リアルタイム票数のみ・結果公開" value="3"></v-radio>
-        <v-radio label="完全公開" value="4"></v-radio>
+      <v-radio-group v-model="ruleVotingRule" label="投票モード" :disabled="mode != MODE.EDIT" @click="changeRuleVotingRule">
+        <v-radio label="完全匿名" :value="VOTING_RULE.ANONYMOUS"></v-radio>
+          <div v-if="ruleVotingRule==VOTING_RULE.ANONYMOUS">投票中も投票状態は見えません。投票数のみが開示されます。</div>
+        <v-radio label="結果公開のみ" :value="VOTING_RULE.REALTIME_ANONYMOUS"></v-radio>
+          <div v-if="ruleVotingRule==VOTING_RULE.REALTIME_ANONYMOUS">投票中も投票状態は見えません。投票結果はユーザー毎の内訳が確認できます</div>
+        <v-radio label="リアルタイム票数のみ・結果匿名" :value="VOTING_RULE.OPEN"></v-radio>
+        <v-radio label="リアルタイム票数のみ・結果公開" :value="VOTING_RULE.REALTIME_ANONYMOUS_RESULT_OPEN"></v-radio>
+        <v-radio label="完全公開" :value="VOTING_RULE.REALTIME_FULL_OPEN"></v-radio>
       </v-radio-group>
       <p>
-        <v-text-field label="投票最大数" v-model="ruleVoteMax" inputmode="numeric" type="number" suffix="票/人" :disabled="mode != MODE.EDIT"></v-text-field>
+        <v-text-field label="投票最大数" v-model="ruleVoteMax" inputmode="numeric" suffix="票/人" :disabled="mode != MODE.EDIT" @change="changeRuleVoteMax"></v-text-field>
       </p>
-      <v-switch label="集計可能最低人数" v-model="ruleMinOpenableEnable" :disabled="mode != MODE.EDIT"></v-switch>
-      <v-switch label="投票制限時間" v-model="ruleRemainTimeEnable" :disabled="mode != MODE.EDIT"></v-switch>
+      <v-switch label="集計可能最低人数" v-model="ruleMinOpenableEnable" :disabled="mode != MODE.EDIT" @click="changeRuleMinOpenableEnable" color="green-darken-3"></v-switch>
+        <div v-if="ruleMinOpenableEnable">
+          <v-text-field label="集計可能最低人数" v-model="ruleMinOpenable" inputmode="numeric" suffix="人" :disabled="mode != MODE.EDIT" @change="changeRuleMinOpenable"></v-text-field>
+          以上が投票を完了すると開票できます。
+        </div>
+      <!--v-switch label="投票制限時間" v-model="ruleRemainTimeEnable" :disabled="mode != MODE.EDIT"></v-switch-->
     </div></transition>
     <ul id="cards">
         <li
@@ -41,6 +48,19 @@
     <div id="history">
       <v-btn @click="openHistory"><v-icon left>mdi-history</v-icon>History</v-btn>
     </div>
+    <v-dialog
+      v-model="warningDialog"
+      width="300px"
+      >
+      <v-card>
+        <v-card-text>
+          {{warningText}}
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" block @click="warningDialog = false">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -71,11 +91,11 @@
   };
 
   const VOTING_RULE = {
-    // ANONYMOUS: 0,
-    // REALTIME_ANONYMOUS: 1,
-    OPEN: 2,
-    // REALTIME_ANONYMOUS_RESULT_OPEN: 3,
-    // REALTIME_FULL_OPEN : 4
+    ANONYMOUS: 1,
+    REALTIME_ANONYMOUS: 2,
+    OPEN: 3,
+    REALTIME_ANONYMOUS_RESULT_OPEN: 4,
+    REALTIME_FULL_OPEN : 5
   }
 
   export default {
@@ -106,16 +126,21 @@
             mode: MODE.EDIT,
             showRule: BOOL.FALSE,
             ruleVotingRule : VOTING_RULE.OPEN,
+            ruleVotingRuleClicked : false,
             ruleVoteMax : 1,
             ruleMinOpenableEnable : false,
+            ruleMinOpenableEnableClicked : false,
             ruleMinOpenable : 1,
             ruleRemainTimeEnable : false,
             ruleRemainTime : 0,
             votes : [],
-            voteId : 1
+            voteId : 1,
+            warningDialog: false,
+            warningText: ''
       }
     },
     created() {
+      this.VOTING_RULE = VOTING_RULE;
       this.MODE = MODE;
     },
     methods: {
@@ -152,6 +177,32 @@
         e.target.classList.add('selected');
         this.activeItems.push({node: e.target, key: item.index});
         this.voteStatus = BOOL.FALSE;
+      },
+      changeRuleMinOpenable() {
+        console.log('changeRuleMinOpenable');
+        const parsedRuleMinOpenable = parseInt(this.ruleMinOpenable);
+        if (isNaN(parsedRuleMinOpenable)) {
+          this.warningDialog = true;
+          this.warningText = '整数を入力してください';
+        } else {
+          this.socket.emit('update_rule_min_openable_c2s', parsedRuleMinOpenable);
+        }
+      },
+      changeRuleMinOpenableEnable() {
+        this.ruleMinOpenableEnableClicked = true;
+      },
+      changeRuleVoteMax() {
+        console.log(`changeRuleVoteMax ${this.ruleVoteMax}`);
+        const parsedRuleVoteMax = parseInt(this.ruleVoteMax);
+        if (isNaN(parsedRuleVoteMax)) {
+          this.warningDialog = true;
+          this.warningText = '整数を入力してください';
+        } else {
+          this.socket.emit('update_rule_vote_max_c2s', parsedRuleVoteMax);
+        }
+      },
+      changeRuleVotingRule() {
+        this.ruleVotingRuleClicked = true;
       },
       toggleRule() {
         this.showRule = this.showRule == BOOL.TRUE ? BOOL.FALSE : BOOL.TRUE;
@@ -198,6 +249,12 @@
       }
     },
     watch: {
+      cardControl() {
+        console.log(`card control click $cardControl`);
+        if (Math.abs(this.cardControl) == 1) {
+          this.socket.emit('click_card_control', this.cardControl > 0);
+        }
+      },
       edit() {
         console.log(`edit changed $edit`);
         if (Math.abs(this.edit) == 2) {
@@ -205,21 +262,29 @@
           //setTimeout(() => (this.edit = this.edit / 2 * -1), 3000);
         }
       },
-      cardControl() {
-        console.log(`card control click $cardControl`);
-        if (Math.abs(this.cardControl) == 1) {
-          this.socket.emit('click_card_control', this.cardControl > 0);
+      openResults() {
+        if (Math.abs(this.openResults) == 2) {
+          this.socket.emit('update_mode_c2s', MODE.RESULT);
+        }
+      },
+      ruleMinOpenableEnable() {
+        if (this.ruleMinOpenableEnableClicked) {
+          const ruleMinOpenable = this.ruleMinOpenableEnable ? this.ruleMinOpenable : this.ruleMinOpenable * -1;
+          this.socket.emit('update_rule_min_openable_c2s', ruleMinOpenable);
+          this.ruleMinOpenableEnableClicked = false;
+        }
+      },
+      ruleVotingRule() {
+        console.log(`change ruleVotingRule ${this.ruleVotingRule}`);
+        if (this.ruleVotingRuleClicked) {
+          this.socket.emit('click_rule_voting_rule_c2s', this.ruleVotingRule);
+          this.ruleVotingRuleClicked = false;
         }
       },
       voteStart() {
         console.log('clicked vote start', this.voteStart);
         if (Math.abs(this.voteStart) == 2) {
           this.socket.emit('update_mode_c2s', this.voteStart > 0 ? MODE.BEFORE_VOTE : MODE.VOTE_START);
-        }
-      },
-      openResults() {
-        if (Math.abs(this.openResults) == 2) {
-          this.socket.emit('update_mode_c2s', MODE.RESULT);
         }
       },
       voteStatus() {
@@ -259,6 +324,20 @@
         }
       });
 
+      this.socket.on('update_rule_voting_rule', (votingRule) => {
+        this.ruleVotingRule = votingRule;
+        console.log(`socket receive update_rule_voting_rule ${votingRule}`);
+      });
+
+      this.socket.on('update_rule_vote_max', (voteMax) => {
+        this.ruleVoteMax = voteMax;
+      });
+
+      this.socket.on('update_rule_min_openable', (minOpenable) => {
+        this.ruleMinOpenable = Math.abs(minOpenable);
+        this.ruleMinOpenableEnable = minOpenable > 0;
+      });
+
       this.socket.on('load_data', (data) => {
         console.log(`load_data mode ${data.mode}`);
         this.users = data.users;
@@ -267,7 +346,8 @@
         this.votes = data.votes;
         this.ruleVotingRule = data.rules.votingRule;
         this.ruleVoteMax = data.rules.voteMax;
-        this.ruleMinOpenable = data.rules.minOpenable;
+        this.ruleMinOpenable = Math.abs(data.rules.minOpenable);
+        this.ruleMinOpenableEnable = data.rules.minOpenable > 0;
         //this.ruleRemainTime = data.rules.remainTime;
         this.voteId = data.voteId;
       });

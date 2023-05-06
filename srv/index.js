@@ -78,22 +78,28 @@ export default (app, http) => {
       io.to(roomId).emit('update_items', items);
     });
 
-    socket.on('click_rule_voting_rule', function(data){
-      console.log('click_rule_voting_rule');
+    socket.on('click_rule_voting_rule_c2s', function(data){
+      console.log(`click_rule_voting_rule_c2s ${data}`);
       const ret = room.updateVotingRule(data);
-      io.to(roomId).emit('update_rule_voting_rule', ret);
+      if (ret != null) {
+        io.to(roomId).emit('update_rule_voting_rule', ret);
+      }
     });
 
-    socket.on('update_rule_vote_max', function(data){
-      console.log('update_rule_vote_max');
+    socket.on('update_rule_vote_max_c2s', function(data){
+      console.log(`update_rule_vote_max_c2s ${data}`);
       const ret = room.updateVoteMax(data);
-      io.to(roomId).emit('update_rule_vote_max', ret);
+      if (ret != null) {
+        io.to(roomId).emit('update_rule_vote_max', ret);
+      }
     });
 
-    socket.on('update_min_openable', function(data){
-      console.log('update_min_openable');
+    socket.on('update_rule_min_openable_c2s', function(data){
+      console.log(`update_rule_min_openable_c2s ${data}`);
       const ret = room.updateMinOpenable(data);
-      io.to(roomId).emit('update_min_openable', ret);
+      if (ret != null) {
+        io.to(roomId).emit('update_rule_min_openable', ret);
+      }
     });
 
     socket.on('edit_card_text' ,function(data) {

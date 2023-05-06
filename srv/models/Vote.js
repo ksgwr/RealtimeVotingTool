@@ -1,5 +1,5 @@
 const VOTING_RULE = {
-    ANOYMOUS: 0
+    ANOYMOUS: 1
 };
 
 const MODE = {
@@ -21,15 +21,23 @@ class Vote {
     }
 
     updateVotingRule(votingRule) {
-        this.votingRule = votingRule;
+        return this.votingRule = votingRule;
     }
 
     updateVoteMax(voteMax) {
-        this.voteMax = voteMax;
+        const parsed = parseInt(voteMax);
+        if (isNaN(parsed)) {
+            return null;
+        }
+        return this.voteMax = parsed;
     }
 
     updateMinOpenable(minOpenable) {
-        this.minOpenable = minOpenable;
+        const parsed = parseInt(minOpenable);
+        if (isNaN(parsed)) {
+            return null;
+        }
+        return this.minOpenable = parsed;
     }
 
     initVote() {
