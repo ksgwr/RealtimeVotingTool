@@ -76,11 +76,11 @@ class Vote {
         }
         const ret = {size: size, mode: mode};
 
-        if (this.votingRule in [
+        if ([
             VOTING_RULE.OPEN,
             VOTING_RULE.REALTIME_ANONYMOUS_RESULT_OPEN,
             VOTING_RULE.REALTIME_FULL_OPEN
-        ]) {
+            ].includes(this.votingRule)) {
             const results = {};
             for (const [userId, indexes] of Object.entries(this.data)) {
                 for (const [rank, index] of Object.entries(indexes)) {
@@ -88,9 +88,7 @@ class Vote {
                         results[index] = [];
                     }
                     const vote = {rank: rank};
-                    if (this.votingRule in [
-                        VOTING_RULE.REALTIME_FULL_OPEN
-                    ]) {
+                    if ([VOTING_RULE.REALTIME_FULL_OPEN].includes(this.votingRule)) {
                         vote.userId = userId;
                     }
                     results[index].push(vote);
@@ -113,11 +111,12 @@ class Vote {
                     results[index] = [];
                 }
                 const vote = {rank: rank};
-                if (this.votingRule in [
+                if ([
                     VOTING_RULE.REALTIME_ANONYMOUS,
                     VOTING_RULE.REALTIME_ANONYMOUS_RESULT_OPEN,
                     VOTING_RULE.REALTIME_FULL_OPEN
-                ]) {
+                    ].includes(this.votingRule)
+                ) {
                     vote.userId = userId;
                 }
                 results[index].push(vote);

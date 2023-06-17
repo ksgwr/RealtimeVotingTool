@@ -71,7 +71,8 @@ class Room {
 
         this.histories.push({
            id : this.histories.length + 1,
-           items : items
+           items : items,
+           rules : this.vote.getRules()
         });
     }
 
@@ -183,29 +184,6 @@ class Room {
     }
 
     getResults() {
-        // TODO: 投票締め切りしてthis.historiesにデータを保存、ここからは単純にgetするだけにする
-        // このクラス内でその時点のルールに従って結果の匿名化、抽象化などを行う
-        //return [this.vote.getSummaryResult()];
-        // dummy data
-        /*
-        return [
-            {
-                id:1,
-                items:[
-                    { index: 0, text:'1', results:[{userId:'aaa', rank:1}]},
-                    { index: 1, text:'2', results:[{userId:'bbb', rank:1}, {userId:'ccc', rank:1}]},
-                    { index: 2, text:'3' }
-                ]
-            },
-            {
-                id:2,
-                items:[
-                    { index:0, text:'1', results:[{rank:1}, {rank:1}]},
-                    { index:1, text:'2'},
-                    { index:2, text:'3'}
-                ]
-            }
-        ];*/
         return this.histories;
     }
 }

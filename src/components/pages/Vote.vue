@@ -340,7 +340,6 @@
 
       this.socket.on('load_data', (data) => {
         console.log(`load_data mode ${data.mode}`);
-        console.log(data.users);
         this.users = data.users;
         this.items = data.items;
         this.updateMode(data.mode);
