@@ -1,5 +1,9 @@
 const VOTING_RULE = {
-    ANOYMOUS: 1
+    ANOYMOUS: 1,
+    REALTIME_ANONYMOUS: 2,
+    OPEN: 3,
+    REALTIME_ANONYMOUS_RESULT_OPEN: 4,
+    REALTIME_FULL_OPEN: 5
 };
 
 const MODE = {
@@ -70,30 +74,56 @@ class Vote {
         } else {
             mode = MODE.OPENABLE;
         }
-        return {
-            size: size,
-            mode: mode
-        };
+        const ret = {size: size, mode: mode};
+
+        if (this.votingRule in [
+            VOTING_RULE.OPEN,
+            VOTING_RULE.REALTIME_ANONYMOUS_RESULT_OPEN,
+            VOTING_RULE.REALTIME_FULL_OPEN
+        ]) {
+            const results = {};
+            for (const [userId, indexes] of Object.entries(this.data)) {
+                for (const [rank, index] of Object.entries(indexes)) {
+                    if (results[index] === undefined) {
+                        results[index] = [];
+                    }
+                    const vote = {rank: rank};
+                    if (this.votingRule in [
+                        VOTING_RULE.REALTIME_FULL_OPEN
+                    ]) {
+                        vote.userId = userId;
+                    }
+                    results[index].push(vote);
+                }
+            }
+            ret.results = results;
+        }
+
+        return ret
     }
 
     getSummaryResult() {
-        const result = {}
+        const results = {};
         if (Object.keys(this.data).length == 0) {
-            return result;
+            return results;
         }
         for (const [userId, indexes] of Object.entries(this.data)) {
             for (const [rank, index] of Object.entries(indexes)) {
-                if (result[index] === undefined) {
-                    result[index] = [];
+                if (results[index] === undefined) {
+                    results[index] = [];
                 }
-                // TODO: 匿名時にuserIdを置き換え
-                result[index].push({
-                    userId: userId,
-                    rank: rank
-                });
+                const vote = {rank: rank};
+                if (this.votingRule in [
+                    VOTING_RULE.REALTIME_ANONYMOUS,
+                    VOTING_RULE.REALTIME_ANONYMOUS_RESULT_OPEN,
+                    VOTING_RULE.REALTIME_FULL_OPEN
+                ]) {
+                    vote.userId = userId;
+                }
+                results[index].push(vote);
             }
         }
-        return result;
+        return results;
     }
 
 }

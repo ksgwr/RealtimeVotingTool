@@ -21,7 +21,10 @@ class Room {
 
     constructor(roomId) {
         this.roomId = roomId;
+        // {secretId => User Object}
         this.users = {};
+        // {roomOpenUserId => User Object}
+        this.openUsers = {};
         this.mode = MODE.EDIT;
         this.items = [
             { index: 0, text:'1' },
@@ -44,6 +47,18 @@ class Room {
     countingResult() {
         let items = JSON.parse(JSON.stringify(this.items));
         let results = this.vote.getSummaryResult();
+
+        console.log('counting result');
+        console.log(JSON.stringify(this.openUsers));
+        console.log(JSON.stringify(results));
+        for (const [index, votes] of Object.entries(results)) {
+            for (let i=0;i<votes.length;i++) {
+                const vote = votes[i];
+                if (vote.userId !== undefined) {
+                    Object.assign(results[index][i], this.openUsers[vote.userId]);
+                }
+            }
+        }
 
         console.log("summary results");
         console.log(JSON.stringify(results));
@@ -81,17 +96,13 @@ class Room {
 
     getInitialData() {
         return {
-            users : this.getUsers(),
+            users : this.openUsers,
             mode : this.mode,
             items : this.items,
             votes : this.getOnGoingResult(),
             rules : this.vote.getRules(),
             voteId : this.histories.length + 1
         };
-    }
-
-    getUsers() {
-        return Object.values(this.users);
     }
 
     updateUser(userId, data) {
@@ -105,7 +116,13 @@ class Room {
         } else {
             target.update(data);
         }
-        return Object.values(this.users);
+        const openUid = this.getRoomOpenUserId(userId);
+        if (data === null) {
+            delete this.openUsers[openUid];
+        } else {
+            this.openUsers[openUid] = target.getOpenData();
+        }
+        return this.openUsers;
     }
 
     updateVotingRule(data) {

@@ -10,6 +10,12 @@ class User {
     update(data) {
         this.name = data.name;
     }
+
+    getOpenData() {
+        return {
+            name : this.name
+        };
+    }
 }
 
 module.exports = User;

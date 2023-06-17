@@ -5,7 +5,7 @@
        v-if="MODE.BEFORE_VOTE <= mode && mode <= MODE.OPENABLE_WAITING" />
     <div id="users">
         <p><span v-if="MODE.VOTE_START <= mode && mode <= MODE.OPENABLE_WAITING">{{ votes.size }} Voted /</span>
-         {{ users.length }} Users
+         {{ Object.keys(users).length }} Users
          &nbsp;
         <v-btn icon="mdi-cog" :color="showRule > 0 ? 'grey': null" @click="toggleRule"></v-btn>
          </p>
@@ -114,7 +114,7 @@
                 userId : localStorage.uid
               }
             }),
-            users: [],
+            users: {}, // {userid => {name}}
             items: [],
             edit : BOOL.TRUE,
             cardControl : BOOL.NEUTRAL,
@@ -340,6 +340,7 @@
 
       this.socket.on('load_data', (data) => {
         console.log(`load_data mode ${data.mode}`);
+        console.log(data.users);
         this.users = data.users;
         this.items = data.items;
         this.updateMode(data.mode);
@@ -353,7 +354,8 @@
       });
 
       this.socket.on('connect', () => {
-        this.socket.emit('update_user', {name:"aaa"});
+        const name = JSON.parse(localStorage.anon) || localStorage.name == '' ? undefined : localStorage.name;
+        this.socket.emit('update_user', {name: name});
         console.log(this.socket.connected);
       });
     }

@@ -15,6 +15,11 @@ export default (app, http) => {
     origin: 'http://localhost:8080'
   }));
 
+  app.get('/debug', function(req, res) {
+    const room = Room.getOrCreateRoom(req.query.roomId);
+    res.send(JSON.stringify(room));
+  });
+
   app.get('/result', function(req, res){
     const room = Room.getOrCreateRoom(req.query.roomId);
     res.send(room.getResults());

@@ -15,7 +15,7 @@
     <v-card-text>
       <v-layout row align-center>
         <UserIcon :user="{userId: openUserId, name: name}" iconSize="5em" />
-        <v-text-field v-model="name" label="Name" size="5em"></v-text-field>
+        <v-text-field v-model="name" label="Name"></v-text-field>
       </v-layout>
       <v-layout row justify-end>
         <v-checkbox v-model="anonymous" label="Anonymous Mode"></v-checkbox>
@@ -42,7 +42,8 @@ export default {
         openUserId : '',
         name : undefined,
         anonymous: false,
-        dialog : false
+        dialog : false,
+        update : false
       }
     },
     mounted() {
@@ -55,12 +56,15 @@ export default {
             this.userId = res.data;
           })
       }
-      if (localStorage.name) {
+      if (localStorage.name && localStorage.name != "") {
         this.name = localStorage.name;
       }
       if (localStorage.anon) {
-        this.anonymous = localStorage.anon;
+        this.anonymous = JSON.parse(localStorage.anon);
+      } else {
+        localStorage.anon = this.anonymous;
       }
+      this.update = false;
     },
     watch: {
       $route(to) {
@@ -80,10 +84,26 @@ export default {
         });
       },
       name(newName) {
-        localStorage.name = newName;
+        if (localStorage.name != newName) {
+          localStorage.name = newName;
+          this.update = true;
+        }
       },
       anonymous(newAnon) {
-        localStorage.anon = newAnon;
+        if (localStorage.name != new Boolean(newAnon).toString()) {
+          localStorage.anon = newAnon;
+          this.update = true;
+        }
+      },
+      dialog(newDialog) {
+        if (this.update && !newDialog) {
+          const url = this.$route.path
+          if (!url.match("/room/")) {
+            return;
+          }
+          this.update = false;
+          this.$router.go({path: this.$router.currentRoute.path, force: true});
+        }
       }
     }
 }
