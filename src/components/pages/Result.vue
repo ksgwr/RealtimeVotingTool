@@ -90,6 +90,7 @@
                     }
 
                     // calc points
+                    // TODO: think rank rule if needed
                     for (let i=0;i<this.results.length;i++) {
                         let items = this.results[i].items;
                         for (let j=0;j<items.length;j++) {

@@ -39,7 +39,19 @@
           :contenteditable="edit > 0"
           v-on:input="onChangeItem($event, item)"
           @click="clickItem($event, item)">
-            <p>{{ item.text }}</p>
+            <div class="card-contents">
+              <p>{{item.text}}</p>
+            </div>
+            <div class="clickable-badge" @click="votes.results && item.index in votes.results && openUserDialog(votes.results[item.index])"
+              v-if="votes.openId && votes.results && item.index in votes.results && votes.results[item.index].length > 1"
+              >{{votes.results[item.index].length}}
+            </div>
+            <div class="icon-badge" v-else-if="votes.openId && votes.results && item.index in votes.results && votes.results[item.index].length == 1"
+              ><UserIcon :user="votes.results[item.index][0]" :tooltip="true" />
+            </div>
+            <div class="badge" v-else-if="votes.results && item.index in votes.results && votes.results[item.index].length > 0"
+              >{{votes.results[item.index].length}}
+            </div>
         </li>
     </ul>
     <div id="select-box">
@@ -61,6 +73,27 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+        v-model="userDialog"
+        scrollable
+        width="auto">
+        <v-card>
+            <v-card-text>
+                <v-container>
+                    <v-row>
+                        <v-col v-for="result in userDialogItem.results"
+                            :key="result.userId"
+                        >
+                            <UserIcon :user="result" nameView="true" />
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="primary" block @click="dialog = false">Close</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -68,6 +101,7 @@
 
   import CardControlButtons from '@/components/modules/CardControlButtons.vue';
   import EditButton from '@/components/modules/EditButton.vue';
+  import UserIcon from '@/components/modules/UserIcon.vue';
   import VoteButton from '@/components/modules/VoteButton.vue';
   import VoteControlButton from '@/components/modules/VoteControlButton.vue';
 
@@ -104,6 +138,7 @@
     components: {
       EditButton,
       CardControlButtons,
+      UserIcon,
       VoteButton,
       VoteControlButton
     },
@@ -133,6 +168,8 @@
             ruleMinOpenable : 1,
             ruleRemainTimeEnable : false,
             ruleRemainTime : 0,
+            userDialog: false,
+            userDialogItem: null,
             votes : [],
             voteId : 1,
             warningDialog: false,
@@ -146,6 +183,10 @@
     methods: {
       openHistory() {
         this.$router.push(`/room/${this.id}/results/0`);
+      },
+      openUserDialog(item) {
+        this.userDialogItem = item;
+        this.userDialog = true;
       },
       onChangeItem(e, item) {
         console.log(e.target);
@@ -223,6 +264,7 @@
           case MODE.VOTE_START:
             this.edit = BOOL.NEUTRAL;
             this.voteStart = BOOL.TRUE;
+            this.votes = [];
             break;
           case MODE.VOTING:
             this.edit = BOOL.NEUTRAL;
@@ -242,6 +284,7 @@
               this.activeItems[i].node.classList.remove('selected');
             }
             this.activeItems.splice(0);
+            this.votes = [];
             this.$router.push(`/room/${this.id}/results/${this.voteId++}`);
             break;
           default:
@@ -380,12 +423,62 @@
     height: 150px;
     text-align: center;
     margin: 10px;
+}
+
+.card-contents {
+    width: 100%;
+    height: 100%;
     display: table
 }
 
-.card p {
+.card-contents p {
     display: table-cell;
     vertical-align: middle;
+    width: 100px;
+}
+
+.badge {
+    position: relative;
+    display: block;
+    top: -40px;
+    left: -10px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    box-shadow: 0 0 5px #888;
+    border-radius: 50%;
+    background: #888;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.clickable-badge {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    top: -40px;
+    left: -10px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    box-shadow: 0 0 5px #333;
+    border-radius: 50%;
+    background: #333;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.icon-badge {
+    position: relative;
+    display: block;
+    top: -40px;
+    left: -40px;
+}
+
+.hand-cursor {
+  cursor: pointer;
 }
 
 .selected {

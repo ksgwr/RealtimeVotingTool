@@ -74,7 +74,7 @@ class Vote {
         } else {
             mode = MODE.OPENABLE;
         }
-        const ret = {size: size, mode: mode};
+        const ret = {size: size, mode: mode, openId: this.votingRule == VOTING_RULE.REALTIME_FULL_OPEN};
 
         if ([
             VOTING_RULE.OPEN,
@@ -87,7 +87,7 @@ class Vote {
                     if (results[index] === undefined) {
                         results[index] = [];
                     }
-                    const vote = {rank: rank};
+                    const vote = {rank: Number.parseInt(rank)};
                     if ([VOTING_RULE.REALTIME_FULL_OPEN].includes(this.votingRule)) {
                         vote.userId = userId;
                     }

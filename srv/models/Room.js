@@ -180,7 +180,18 @@ class Room {
     }
 
     getOnGoingResult() {
-        return this.vote.getOnGoingResult();
+        const ret = this.vote.getOnGoingResult();
+        if (ret.openId) {
+            for (const [index, votes] of Object.entries(ret.results)) {
+                for (let i=0;i<votes.length;i++) {
+                    const vote = votes[i];
+                    if (vote.userId !== undefined) {
+                        Object.assign(ret.results[index][i], this.openUsers[vote.userId]);
+                    }
+                }
+            }
+        }
+        return ret
     }
 
     getResults() {
