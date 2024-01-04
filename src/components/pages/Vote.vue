@@ -81,7 +81,7 @@
             <v-card-text>
                 <v-container>
                     <v-row>
-                        <v-col v-for="result in userDialogItem.results"
+                        <v-col v-for="result in userDialogItem"
                             :key="result.userId"
                         >
                             <UserIcon :user="result" nameView="true" />
@@ -90,7 +90,7 @@
                 </v-container>
             </v-card-text>
             <v-card-actions>
-                <v-btn color="primary" block @click="dialog = false">Close</v-btn>
+                <v-btn color="primary" block @click="userDialog = false">Close</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
